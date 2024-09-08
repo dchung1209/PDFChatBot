@@ -6,6 +6,6 @@ Used
 
 
 # ⭐ Key Skills
-✅ wassup \
+✅ wassup 
 
 ✅ hi
