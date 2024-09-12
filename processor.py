@@ -1,12 +1,15 @@
-import streamlit as st
-from llama_parse import LlamaParse
-from llama_index.core import VectorStoreIndex
+import os
+
+import nest_asyncio
+nest_asyncio.apply()
+
+from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.node_parser import MarkdownElementNodeParser
-from llama_index.llms.openai import OpenAI
-from llama_index.core import StorageContext
 from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.groq import Groq
+from llama_index.llms.openai import OpenAI
 from llama_index.vector_stores.astra_db import AstraDBVectorStore
-from qdrant_client import QdrantClient
+from llama_parse import LlamaParse
 
 def create_db():
     API_ENDPOINT = ""
@@ -24,11 +27,11 @@ def create_db():
 
     return astra_db
 
-def parse_pdf(file, llama_api_key):
+def parse_pdf(file):
 
     # Parser (PDF reader) : LlamaParse
     parser = LlamaParse(
-        api_key = llama_api_key,
+        api_key = os.environ.get("LLAMA_CLOUD_API_KEY"),
         result_type = "markdown",
         num_workers=4,
         language="en"
@@ -37,20 +40,30 @@ def parse_pdf(file, llama_api_key):
     return parser.load_data(file)
 
 
-def create_llm():
-    return OpenAI(model="gpt-3.5-turbo")
+def create_llm(model):
+    if (model == "Llama 3.1"):
+        return Groq(model="llama-3.1-70b-versatile")
+    elif (model =="GPT-4o"):
+        return OpenAI(model="gpt-4o")
+    else:
+        print(f"Unrecognized model: {model}")
+        return None
 
 def create_embed_model():
-    return OpenAIEmbedding(model="text-embedding-3-small")
+    return OpenAIEmbedding(model="text-embedding-ada-002")
 
 def build_index(documents):
     node_parser = MarkdownElementNodeParser(
-        llm=OpenAI(model="gpt-3.5-turbo"), 
         num_workers=8
     )
 
-    nodes = node_parser.get_nodes_from_documents(documents)
-    base_nodes, objects = node_parser.get_nodes_and_objects(nodes)
+    nodes = node_parser.get_nodes_from_documents(
+        documents
+    )
+
+    base_nodes, objects = node_parser.get_nodes_and_objects(
+        nodes
+    )
 
     storage_context = StorageContext.from_defaults(
         vector_store = create_db()
@@ -62,6 +75,3 @@ def build_index(documents):
 
     return recursive_index
 
-    
-
-    

@@ -6,3 +6,8 @@ The project utilized *LLamaParse* for PDF parsing, *Llamaindex* for RAG function
 ✅ wassup 
 
 ✅ hi
+
+
+# Few Notes
+
+For light uses, I think the cheapest combination, something like text-embedding-3-small and Llama 3.1, works pretty well (using Llama 3.1 by Groq is basically free as of now). But it appears that the model's performance depends on the quality of the prompt. Llama may not be ideal for reading PDF files that include mathematical content.

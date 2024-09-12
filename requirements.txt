@@ -1,5 +1,11 @@
+llama_index
+llama_parse
+llama-index-postprocessor-colbert-rerank
+llama-index-llms-openai
+llama-index-llms-groq
+llama-index-vector-stores-astra
+nest_asyncio
+pandas
+pyodbc
 streamlit
-openai
-langchain
-langchain-openai
-llama-index
+
