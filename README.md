@@ -1,5 +1,5 @@
 # PDFChatBot
-![alt text](/home/dchung/projects/PDFChat/assets/2024-09-13 112810.png)
+![alt text](https://github.com/dchung1209/PDFChatBot/blob/main/assets/2024-09-13%20112810.png?raw=true)
 
 # Features
 
