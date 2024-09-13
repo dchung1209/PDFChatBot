@@ -1,13 +1,38 @@
 # PDFChatBot
-The project utilized *LLamaParse* for PDF parsing, *Llamaindex* for RAG functionality, *openai-sora-embedding* for text embedding, and OpenAI's *GPT4-o* and META *Llama 3.1* as the primary language model.
+![alt text](/home/dchung/projects/PDFChat/assets/2024-09-13 112810.png)
+
+# Features
+
+- **RAG + Recursive Retrieval + Reranker**: Get more precise responses from PDFs. Used LlamaIndex for the RAG pipeline and Colbert 2.0 for reranking.
+
+- **Multi-Model Support**: Choose between Llama 3.1 and GPT-4o for language model needs.
+
+- **Integration**: Utilized Streamlit to create a user-friendly chat interface.
+
+- **Conversation Management**: Conversations are saved in an SQL Server, allowing you to keep track of your interactions.
 
 
-# ⭐ Key Skills
-✅ wassup 
+# Instructions
 
-✅ hi
+1. **Set API Keys**
+    - OpenAI API Key
+    - LlamaCloud API Key
+    - GroqCloud API Key (for Llama 3.1)
+
+2. **Upload PDF**
+    - Click on the file uploader to select and upload your PDF file.
+
+3. **Process PDF**
+    - Click "Process" to analyze and index your PDF.
+
+4. **Interact with Document**
+    - Type your questions in the chat input to get responses from the PDF.
+
+5. **Save and Review Conversations**
+    - Use the "Save Chat" button to save your chat history and review it later.
+
 
 
 # Few Notes
 
-For light uses, I think the cheapest combination, something like text-embedding-3-small and Llama 3.1, works pretty well (using Llama 3.1 by Groq is basically free as of now). But it appears that the model's performance depends on the quality of the prompt. Llama may not be ideal for reading PDF files that include mathematical content.
+The new released model from openAI would be a good language model to process complex mathematics questions.

@@ -1,22 +1,34 @@
-import pyodbc
+import pymysql
 
-server = "" # Container Name
-database = "" # Database
-username = "" # Username
-password = "" # Password
+class SQLUtils:
+    def __init__(self, server, username, password, database, port):
+        self.db = pymysql.connect(
+            host = server,
+            user = username,
+            passwd = password,
+            db = database,
+            port = port
+        )
 
+        self.cursor = self.db.cursor()
+    
+    def query_timestamp(self):
+        self.cursor.execute("SELECT timestamp FROM chat_history")
+        return self.cursor.fetchall()
+    
+    def query_user_content(self):
+        self.cursor.execute("SELECT user_content FROM chat_history")
+        return self.cursor.fetchall()
 
-connection_string = f""
+    def query_bot_content(self):
+        self.cursor.execute("SELECT bot_content FROM chat_history")
+        return self.cursor.fetchall()
+    
+    def save_conversation(self, timestamp, user_content, bot_content):
+        sql_query = f"INSERT INTO chat_history (timestamp, user_content, bot_content) VALUES ( '{timestamp}', '{user_content}', '{bot_content}')"
+        self.cursor.execute(sql_query)
+        self.db.commit()
 
-
-connection = pyodbc.connect(connection_string)
-cursor = connection.cursor()
-
-
-cursor.execute("SELECT * FROM your_table")
-rows = cursor.fetchall()
-for row in rows:
-    print(row)
-
-connection.close()
+    def close(self):
+        self.db.close()
 

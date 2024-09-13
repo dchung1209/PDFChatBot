@@ -14,7 +14,7 @@ from llama_parse import LlamaParse
 def create_db():
     API_ENDPOINT = ""
     ASTRA_TOKENS = ""
-    ASTRA_NAMESPACE = ""
+    ASTRA_NAMESPACE = "PDFChat"
 
     # VectorStore : AstraDB
     astra_db = AstraDBVectorStore(
