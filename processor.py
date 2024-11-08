@@ -52,6 +52,7 @@ def create_llm(model):
 def create_embed_model():
     return OpenAIEmbedding(model="text-embedding-ada-002")
 
+
 def build_index(documents):
     node_parser = MarkdownElementNodeParser(
         num_workers=8

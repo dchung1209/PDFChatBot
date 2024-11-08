@@ -12,6 +12,12 @@ import pymysql
 from processor import parse_pdf, create_llm, create_embed_model, build_index
 from sqlserver import SQLUtils
 
+from langchain.agents import AgentExecutor, Tool, initialize_agent, load_tools
+from langchain.llms import OpenAI as LangChainOpenAI
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.utilities import VectorStoreRetriever
+
 server = "127.0.0.1" # Container Name
 username = "root" # Username
 port = 3307 # Port
@@ -77,6 +83,43 @@ def create_response(index, question):
 
     return response
 
+from langchain.agents import AgentExecutor, Tool, initialize_agent, load_tools
+from langchain.llms import OpenAI as LangChainOpenAI
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.utilities import VectorStoreRetriever
+
+import os 
+
+def initialize_agent_executor(vector_store_index):
+    llm = LangChainOpenAI(
+        openai_api_key=os.environ["OPENAI_API_KEY"],
+        model_name="gpt-4",
+        temperature=0.0
+    )
+
+    tools = [
+        Tool(
+            name="Search",
+            func=lambda query: create_response(vector_store_index, query),
+            description="Useful for when you need to answer questions about the content of the PDF."
+        )
+    ]
+
+    # Initialize memory
+    memory = ConversationBufferMemory(memory_key="chat_history")
+
+    # Initialize the agent
+    agent = initialize_agent(
+        tools=tools,
+        llm=llm,
+        agent="chat-zero-shot-react-description",
+        verbose=True,
+        memory=memory
+    )
+
+    return agent
+
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["LLAMA_CLOUD_API_KEY"] = ""
 os.environ["GROQ_API_KEY"] = ""
@@ -135,6 +178,9 @@ def main():
                     recursive_index = build_index(documents)
 
                     st.session_state.conversation = recursive_index
+
+                    st.session_state.agent_executor = initialize_agent_executor(recursive_index)
+
                     st.write("Successfully procsessed✅")
 
                 except:
@@ -163,7 +209,9 @@ def main():
 
         with st.spinner("Generating response..."):
             try:
-                response = create_response(st.session_state.conversation, prompt)
+                agent_executor = st.session_state.get("agent_executor", None)
+                if not agent_executor:
+                    st.error("Error occured")
             except:
                 response = create_response
 
